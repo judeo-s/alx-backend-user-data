@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 """This module implements base class for Authentication mechanisms."""
