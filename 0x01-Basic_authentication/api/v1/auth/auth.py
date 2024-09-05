@@ -1,38 +1,30 @@
 #!/usr/bin/env python3
-
-"""This module implements base class for Authentication mechanisms."""
-
-from typing import List, TypeVar, Union
-
-User = TypeVar("User")
+""" Module of authentication """
+from flask import request
+from typing import List, TypeVar
 
 
 class Auth:
-    """Auth class to manage the API authentication."""
+    """Template for authentication system for API/site access"""
+    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+        """Checks if a path requires authentication"""
+        if path and excluded_paths:
+            path = f'{path}/' if path[-1] != '/' else path
+            for ex_path in excluded_paths:
+                ex_path = f'{ex_path}/' if ex_path[-1] != '/' else ex_path
+                if ex_path[-2] == '*':
+                    if path[:-1].startswith(ex_path[:-2]):
+                        return False
+                if path == ex_path:
+                    return False
+        return True
 
-    @staticmethod
-    def require_auth(path: str, excluded_paths: List[str]) -> bool:
-        """Require authentication for API paths except for excluded paths."""
-        if not path or not excluded_paths:
-            return True
-
-        path = path.rstrip("/") + "/"
-
-        for exc_path in excluded_paths:
-            # perform a simple a regex to accept paths matching the pattern
-            if path.startswith(exc_path.rstrip("*")):
-                return False
-
-        return path not in excluded_paths
-
-    @staticmethod
-    def authorization_header(request=None) -> Union[str, None]:
-        """Return the value of the Authorization header."""
-        if not request:
+    def authorization_header(self, request=None) -> str:
+        """Retrieves a request's authorization header for authentication"""
+        if not request or not request.headers.get('Authorization'):
             return None
+        return request.headers.get('Authorization')
 
-        return request.headers.get("Authorization")
-
-    def current_user(self, request=None) -> User:
-        """Return the current user."""
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Returns a user object for an authenticated user"""
         return None
