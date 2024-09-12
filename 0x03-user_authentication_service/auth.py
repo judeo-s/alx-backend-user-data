@@ -17,12 +17,6 @@ def _hash_password(password: str) -> bytes:
     return bcrypt.hashpw(password.encode("utf-8"), SALT)
 
 
-def _generate_uuid() -> str:
-    """A method that returns a uuid4 string
-    """
-    return str(uuid4())
-
-
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -63,6 +57,12 @@ class Auth:
                 password.encode("utf-8"),
                 found_user.hashed_password.encode("utf-8"))
 
+    @staticmethod
+    def _generate_uuid() -> str:
+        """A method that returns a uuid4 string
+        """
+        return str(uuid4())
+
     def create_session(self, email: str) -> str:
         """A method used to create a sesison for a registered user.
         """
@@ -74,4 +74,4 @@ class Auth:
         except NoResultFound:
             return None
 
-        return _generate_uuid()
+        return Auth._generate_uuid()
