@@ -62,3 +62,16 @@ class Auth:
         return bcrypt.checkpw(
                 password.encode("utf-8"),
                 found_user.hashed_password.encode("utf-8"))
+
+    def create_session(self, email: str) -> str:
+        """A method used to create a sesison for a registered user.
+        """
+        found_user = None
+        try:
+            found_user = self._db.find_user_by(email=email)
+        except InvalidRequestError:
+            return None
+        except NoResultFound:
+            return None
+
+        return _generate_uuid()
