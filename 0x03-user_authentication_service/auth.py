@@ -7,6 +7,7 @@ import bcrypt
 
 SALT = bcrypt.gensalt()
 
+
 def _hash_password(password: str) -> bytes:
     """ A method that hashes a password using bcrypt hashing algorithm
     """
