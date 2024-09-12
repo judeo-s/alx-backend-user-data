@@ -2,7 +2,7 @@
 """
 A basic Flask application
 """
-from flask import jsonify, Flask, request
+from flask import jsonify, Flask, request, make_response, abort
 from auth import Auth
 
 
@@ -30,6 +30,21 @@ def register_user():
         return {"message": "email already registered"}, 400
 
     return {"email": email, "message": "user created"}
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    """A view functions that handles login requests of registered users.
+    """
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not AUTH.valid_login(email, password):
+        abort(401)
+
+    response = make_response({"email": f"{email}", "message": "logged in"})
+    response.set_cookie("session_id", AUTH._generate_uuid())
+    return response
 
 
 if __name__ == "__main__":
