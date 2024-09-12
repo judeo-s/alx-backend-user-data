@@ -5,6 +5,7 @@ A module to handle things related to authentication
 import bcrypt
 from db import DB, NoResultFound, InvalidRequestError
 from user import User
+from uuid import uuid4
 
 
 SALT = bcrypt.gensalt()
@@ -14,6 +15,12 @@ def _hash_password(password: str) -> bytes:
     """ A method that hashes a password using bcrypt hashing algorithm
     """
     return bcrypt.hashpw(password.encode("utf-8"), SALT)
+
+
+def _generate_uuid() -> str:
+    """A method that returns a uuid4 string
+    """
+    return str(uuid4())
 
 
 class Auth:
