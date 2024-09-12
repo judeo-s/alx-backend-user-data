@@ -18,7 +18,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -47,12 +47,11 @@ class DB:
         """An instance method to add a user to the database
         """
         db_user = User(email=email, hashed_password=hashed_password)
-        sel._session.add(db_user)
+        self._session.add(db_user)
         self._session.commit()
 
         return db_user
 
-    @staticmethod
     def find_user_by(self, **kwargs) -> User:
         """Search and return user by a given field.
         """
@@ -70,7 +69,7 @@ class DB:
     def update_user(self, user_id: int, **kwargs) -> None:
         """Update an instance of a user.
         """
-        if not self._valid_attributes(**kwargs):
+        if not self.valid_attributes(**kwargs):
             raise ValueError("Unrecognized arguments for User.")
 
         db_user = self.find_user_by(id=user_id)
