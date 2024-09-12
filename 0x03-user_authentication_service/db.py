@@ -30,11 +30,9 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email, hashed_password) -> User:
+    def add_user(self, email: str, hashed_password: str) -> User:
         """ An instance method to add a user to the database
         """
-        if not email or not hashed_password:
-            return None
         db_user = User(email=email, hashed_password=hashed_password)
         sel._session.add(db_user)
         self._session.commit()
